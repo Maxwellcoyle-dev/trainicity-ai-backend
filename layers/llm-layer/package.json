@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.12",
+    "langchain": "^0.0.167",
+    "mammoth": "^1.6.0",
+    "openai": "^4.12.1",
+    "pdf-parse": "^1.1.1",
+    "webvtt-parser": "^2.2.0"
+  }
+}

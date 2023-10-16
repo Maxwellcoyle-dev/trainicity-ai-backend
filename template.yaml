@@ -1,0 +1,168 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  lambda-backend-t-ai
+
+  Sample SAM Template for lambda-backend-t-ai
+
+Resources:
+  AWSLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: "aws-layer"
+      Description: "A layer that contains shared code and libraries for aws services"
+      ContentUri: "layers/aws-layer/"
+      CompatibleRuntimes:
+        - nodejs18.x
+      LicenseInfo: "MIT"
+      RetentionPolicy: Retain
+  LLMLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: "llm-layer"
+      Description: "A layer that contains shared code and libraries for language model services"
+      ContentUri: "layers/llm-layer/"
+      CompatibleRuntimes:
+        - nodejs18.x
+      LicenseInfo: "MIT"
+      RetentionPolicy: Retain
+  HandleGetThread:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/handleGetThread
+      Handler: app.lambdaHandler
+      Runtime: nodejs18.x
+      Architectures:
+        - x86_64
+      Layers:
+        - !Ref AWSLayer
+      Events:
+        GetThreadAPIEvent:
+          Type: Api
+          Properties:
+            Path: /getThread
+            Method: ANY
+  HandleUploadFile:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/handleUploadFile
+      Handler: app.lambdaHandler
+      Runtime: nodejs18.x
+      Architectures:
+        - x86_64
+      Layers:
+        - !Ref AWSLayer
+      Events:
+        UploadFileAPIEvent:
+          Type: Api
+          Properties:
+            Path: /updloadFile
+            Method: ANY
+  HandleListThreads:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/handleListThreads
+      Handler: app.lambdaHandler
+      Runtime: nodejs18.x
+      Architectures:
+        - x86_64
+      Layers:
+        - !Ref AWSLayer
+      Events:
+        ListThreadsAPIEvent:
+          Type: Api
+          Properties:
+            Path: /listThreads
+            Method: ANY
+  HandleCurrentThread:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/handleCurrentThread
+      Handler: app.lambdaHandler
+      Runtime: nodejs18.x
+      Architectures:
+        - x86_64
+      Layers:
+        - !Ref AWSLayer
+      Events:
+        CurrentThreadAPIEvent:
+          Type: Api
+          Properties:
+            Path: /currentThread
+            Method: ANY
+  HandleDeleteFile:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/handleDeleteFile
+      Handler: app.lambdaHandler
+      Runtime: nodejs18.x
+      Architectures:
+        - x86_64
+      Layers:
+        - !Ref AWSLayer
+      Events:
+        DeleteFileAPIEvent:
+          Type: Api
+          Properties:
+            Path: /deleteFile
+            Method: ANY
+  HandleDeleteThread:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/handleDeleteThread
+      Handler: app.lambdaHandler
+      Runtime: nodejs18.x
+      Architectures:
+        - x86_64
+      Layers:
+        - !Ref AWSLayer
+      Events:
+        DeleteThreadAPIEvent:
+          Type: Api
+          Properties:
+            Path: /deleteThread
+            Method: ANY
+  HandleUpdateThreadTitle:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/handleUpdateThreadTitle
+      Handler: app.lambdaHandler
+      Runtime: nodejs18.x
+      Architectures:
+        - x86_64
+      Layers:
+        - !Ref AWSLayer
+      Events:
+        UpdateThreadTitleAPIEvent:
+          Type: Api
+          Properties:
+            Path: /updateThreadTitle
+            Method: ANY
+  HandleLLMStandardChat:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/handleLLMStandardChat
+      Handler: app.lambdaHandler
+      Runtime: nodejs18.x
+      FunctionUrlConfig:
+        AuthType: NONE
+        InvokeMode: RESPONSE_STREAM
+      Architectures:
+        - x86_64
+      Layers:
+        - !Ref AWSLayer
+        - !Ref LLMLayer
+  HandleLLMDocQAChat:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/handleLLMDocQAChat
+      Handler: app.lambdaHandler
+      Runtime: nodejs18.x
+      FunctionUrlConfig:
+        AuthType: NONE
+        InvokeMode: RESPONSE_STREAM
+      Architectures:
+        - x86_64
+      Layers:
+        - !Ref AWSLayer
+        - !Ref LLMLayer
