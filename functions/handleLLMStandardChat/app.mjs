@@ -45,6 +45,9 @@ export const lambdaHandler = awslambda.streamifyResponse(
       const payload = JSON.parse(event.body);
       console.log("payload: ", payload);
 
+      const newMessages = payload.messages;
+      const instructions = payload.instructions;
+
       const response = await openai.chat.completions.create(
         {
           model: "gpt-3.5-turbo-16k",
@@ -55,7 +58,7 @@ export const lambdaHandler = awslambda.streamifyResponse(
               role: "system",
               content: `System Instructions: Provide all responses in markdown format with GFM enabled. Include high level of detail in your markdown format to convey the content best.
                   
-                  The user may want to provide you with extra context or instructions to help them achieve their goal. Please read the CHAT CONTEXT below carefully. Use the CHAT CONTEXT to help you provide the best and more pointedly helpful response to the user.
+                  The user may want to provide you with extra context or instructions to help them achieve their goal. Please read the CHAT CONTEXT below carefully. If it is provided, use the CHAT CONTEXT to provide the highly targeted and helpful responses to the user.
                   CHAT CONTEXT: ${instructions}
                   `,
             },
