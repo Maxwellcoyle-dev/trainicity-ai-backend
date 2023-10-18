@@ -28,8 +28,6 @@ export const lambdaHandler = async (event) => {
       };
     }
 
-    console.log(`EVENT: ${JSON.stringify(event)}`);
-
     if (event.requestContext?.authorizer) {
       console.log(`CLAIMS: `, event.requestContext?.authorizer?.claims);
     }
@@ -48,10 +46,11 @@ export const lambdaHandler = async (event) => {
     }
 
     const payload = JSON.parse(event.body);
-    console.log("Payload: ", payload);
 
+    // Check if thread exists
     const getThreadResponse = await getThread(payload);
 
+    // If thread exists, update thread
     if (getThreadResponse) {
       const updateThreadResponse = await updateThread(payload);
       return {
@@ -64,6 +63,7 @@ export const lambdaHandler = async (event) => {
         body: JSON.stringify(updateThreadResponse), // convert items to JSON string
       };
     } else {
+      // If thread does not exist, create thread
       const putThreadResponse = await createThread(payload);
       return {
         statusCode: 200,

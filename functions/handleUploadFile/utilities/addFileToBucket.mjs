@@ -10,7 +10,7 @@ export const addFileToBucket = async (payload) => {
 
   //   Define S3 object params
   const params = {
-    Bucket: "amplifyaistoragebucket134815-dev",
+    Bucket: process.env.STORAGE_BUCKET_NAME,
     Key: `${payload.userID}/${payload.threadID}/${payload.fileName}`,
     Body: fileBuffer,
   };

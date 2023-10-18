@@ -13,7 +13,7 @@ export const deleteFileFromDynamoDB = async (
   fileKeyToRemove
 ) => {
   const getParams = {
-    TableName: "trainicity-ai-thread-table",
+    TableName: process.env.MAIN_TABLE_NAME,
     Key: {
       UserID: { S: userID },
       ThreadID: { S: threadID },

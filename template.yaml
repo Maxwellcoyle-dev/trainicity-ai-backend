@@ -5,6 +5,16 @@ Description: >
 
   Sample SAM Template for lambda-backend-t-ai
 
+Parameters:
+  StorageBucketName:
+    Type: String
+    Description: Name of the S3 bucket where data is stored
+    Default: trainicity-ai-storage-bucket
+  MainTableName:
+    Type: String
+    Description: Name of the DynamoDB table
+    Default: trainicity-ai-main-table
+
 Resources:
   AWSLayer:
     Type: AWS::Serverless::LayerVersion
@@ -36,6 +46,16 @@ Resources:
         - x86_64
       Layers:
         - !Ref AWSLayer
+      Policies:
+        - Statement:
+            - Effect: Allow
+              Action:
+                - dynamodb:Query
+                - dynamodb:GetItem
+              Resource: !ImportValue TrainicityAIMainTableArn
+      Environment:
+        Variables:
+          MAIN_TABLE_NAME: !Ref MainTableName
       Events:
         GetThreadAPIEvent:
           Type: Api
@@ -52,6 +72,22 @@ Resources:
         - x86_64
       Layers:
         - !Ref AWSLayer
+      Environment:
+        Variables:
+          STORAGE_BUCKET_NAME: !Ref StorageBucketName
+          MAIN_TABLE_NAME: !Ref MainTableName
+      Policies:
+        - Statement:
+            # Policy for trainicity-ai-main-table
+            - Effect: Allow
+              Action:
+                - dynamodb:UpdateItem
+              Resource: !ImportValue TrainicityAIMainTableArn
+            # Policy for trainicity-ai-storage-bucket
+            - Effect: Allow
+              Action:
+                - s3:PutObject
+              Resource: !ImportValue TrainicityAIStorageBucketArn
       Events:
         UploadFileAPIEvent:
           Type: Api
@@ -68,6 +104,16 @@ Resources:
         - x86_64
       Layers:
         - !Ref AWSLayer
+      Environment:
+        Variables:
+          MAIN_TABLE_NAME: !Ref MainTableName
+      Policies:
+        - Statement:
+            # Policy for trainicity-ai-main-table
+            - Effect: Allow
+              Action:
+                - dynamodb:Query
+              Resource: !ImportValue TrainicityAIMainTableArn
       Events:
         ListThreadsAPIEvent:
           Type: Api
@@ -84,6 +130,18 @@ Resources:
         - x86_64
       Layers:
         - !Ref AWSLayer
+      Environment:
+        Variables:
+          MAIN_TABLE_NAME: !Ref MainTableName
+      Policies:
+        - Statement:
+            # Policy for trainicity-ai-main-table
+            - Effect: Allow
+              Action:
+                - dynamodb:UpdateItem
+                - dynamodb:GetItem
+                - dynamodb:PutItem
+              Resource: !ImportValue TrainicityAIMainTableArn
       Events:
         CurrentThreadAPIEvent:
           Type: Api
@@ -100,6 +158,23 @@ Resources:
         - x86_64
       Layers:
         - !Ref AWSLayer
+      Environment:
+        Variables:
+          STORAGE_BUCKET_NAME: !Ref StorageBucketName
+          MAIN_TABLE_NAME: !Ref MainTableName
+      Policies:
+        - Statement:
+            # Policy for trainicity-ai-main-table
+            - Effect: Allow
+              Action:
+                - dynamodb:UpdateItem
+                - dynamodb:GetItem
+              Resource: !ImportValue TrainicityAIMainTableArn
+            # Policy for trainicity-ai-storage-bucket
+            - Effect: Allow
+              Action:
+                - s3:DeleteObject
+              Resource: !ImportValue TrainicityAIStorageBucketArn
       Events:
         DeleteFileAPIEvent:
           Type: Api
@@ -116,6 +191,22 @@ Resources:
         - x86_64
       Layers:
         - !Ref AWSLayer
+      Environment:
+        Variables:
+          STORAGE_BUCKET_NAME: !Ref StorageBucketName
+          MAIN_TABLE_NAME: !Ref MainTableName
+      Policies:
+        - Statement:
+            # Policy for trainicity-ai-main-table
+            - Effect: Allow
+              Action:
+                - dynamodb:UpdateItem
+              Resource: !ImportValue TrainicityAIMainTableArn
+            # Policy for trainicity-ai-storage-bucket
+            - Effect: Allow
+              Action:
+                - s3:DeleteObject
+              Resource: !ImportValue TrainicityAIStorageBucketArn
       Events:
         DeleteThreadAPIEvent:
           Type: Api
@@ -132,6 +223,16 @@ Resources:
         - x86_64
       Layers:
         - !Ref AWSLayer
+      Environment:
+        Variables:
+          MAIN_TABLE_NAME: !Ref MainTableName
+      Policies:
+        - Statement:
+            # Policy for trainicity-ai-main-table
+            - Effect: Allow
+              Action:
+                - dynamodb:UpdateItem
+              Resource: !ImportValue TrainicityAIMainTableArn
       Events:
         UpdateThreadTitleAPIEvent:
           Type: Api
@@ -166,3 +267,20 @@ Resources:
       Layers:
         - !Ref AWSLayer
         - !Ref LLMLayer
+      Environment:
+        Variables:
+          STORAGE_BUCKET_NAME: !Ref StorageBucketName
+          MAIN_TABLE_NAME: !Ref MainTableName
+      Policies:
+        - Statement:
+            # Policy for trainicity-ai-main-table
+            - Effect: Allow
+              Action:
+                - dynamodb:GetItem
+                - dynamodb:UpdateItem
+              Resource: !ImportValue TrainicityAIMainTableArn
+            # Policy for trainicity-ai-storage-bucket
+            - Effect: Allow
+              Action:
+                - s3:GetObject
+              Resource: !ImportValue TrainicityAIStorageBucketArn

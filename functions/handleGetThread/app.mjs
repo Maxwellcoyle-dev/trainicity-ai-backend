@@ -15,8 +15,6 @@ export const lambdaHandler = async (event) => {
       };
     }
 
-    console.log(`EVENT: ${JSON.stringify(event)}`);
-
     if (event.requestContext?.authorizer) {
       console.log(`CLAIMS: `, event.requestContext?.authorizer?.claims);
     }
@@ -36,7 +34,9 @@ export const lambdaHandler = async (event) => {
 
     const payload = JSON.parse(event.body);
 
+    // Call getThread with the payload
     const getThreadResponse = await getThread(payload);
+
     return {
       statusCode: 200,
       headers: {

@@ -14,7 +14,7 @@ export const updateDBTable = async (
 
   try {
     const params = {
-      TableName: "amplifyAiProjectTable-dev",
+      TableName: process.env.MAIN_TABLE_NAME,
       Key: {
         UserID: { S: userID },
         ThreadID: { S: threadID },

@@ -5,7 +5,7 @@ const ddbClient = new DynamoDBClient({ region: REGION });
 
 export const getThread = async (payload) => {
   const params = {
-    TableName: "trainicity-ai-thread-table",
+    TableName: process.env.MAIN_TABLE_NAME,
     Key: {
       UserID: { S: payload.userID },
       ThreadID: { S: payload.threadID },

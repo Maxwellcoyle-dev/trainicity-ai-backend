@@ -15,8 +15,6 @@ export const lambdaHandler = async (event) => {
       };
     }
 
-    console.log(`EVENT: ${JSON.stringify(event)}`);
-
     if (event.requestContext?.authorizer) {
       console.log(`CLAIMS: `, event.requestContext?.authorizer?.claims);
     }

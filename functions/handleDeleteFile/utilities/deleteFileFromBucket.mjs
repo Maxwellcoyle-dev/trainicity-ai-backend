@@ -6,7 +6,7 @@ const s3Client = new S3Client({ region: REGION });
 export const deleteFileFromBucket = async (fileKey) => {
   try {
     const params = {
-      Bucket: "new-S3-bucket", // Add s3 bucket upon creation
+      Bucket: process.env.STORAGE_BUCKET_NAME, // Add s3 bucket upon creation
       Key: fileKey,
     };
     const response = await s3Client.send(new DeleteObjectCommand(params));

@@ -5,9 +5,9 @@ const REGION = "us-east-2";
 const s3Client = new S3Client({ region: REGION });
 
 // Expects a bucketName + a key
-export const getFile = async (bucketName, key) => {
+export const getFile = async (key) => {
   const params = {
-    Bucket: bucketName,
+    Bucket: process.env.STORAGE_BUCKET_NAME,
     Key: key,
   };
 

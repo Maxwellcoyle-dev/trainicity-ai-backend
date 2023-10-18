@@ -7,7 +7,7 @@ export const updateThreadTitle = async (payload) => {
   const newTitle = payload.threadTitle;
 
   const params = {
-    TableName: "trainicity-ai-thread-table",
+    TableName: process.env.MAIN_TABLE_NAME,
     Key: {
       UserID: { S: payload.userID },
       ThreadID: { S: payload.threadID },
