@@ -1,4 +1,4 @@
-import { addFileToBucket } from "./utilities/addFileToBucket.mjs";
+import { updateThread } from "./utilities/updateThread.mjs";
 
 export const lambdaHandler = async (event) => {
   try {
@@ -14,6 +14,8 @@ export const lambdaHandler = async (event) => {
         body: JSON.stringify({ message: "Hello World" }), // OPTIONS requests don't typically need a body
       };
     }
+
+    console.log(`EVENT: ${JSON.stringify(event)}`);
 
     if (event.requestContext?.authorizer) {
       console.log(`CLAIMS: `, event.requestContext?.authorizer?.claims);
@@ -32,9 +34,13 @@ export const lambdaHandler = async (event) => {
       };
     }
 
-    const payload = JSON.parse(event.body);
+    const body = JSON.parse(event.body);
 
-    const s3Response = await addFileToBucket(payload);
+    const updateThreadResponse = await updateThread(
+      body.urls,
+      body.userID,
+      body.threadID
+    );
 
     return {
       statusCode: 200,
@@ -43,14 +49,14 @@ export const lambdaHandler = async (event) => {
         "Access-Control-Allow-Methods": "*",
         "Access-Control-Allow-Headers": "*",
       },
-      body: JSON.stringify(s3Response), // convert items to JSON string
+      body: JSON.stringify(updateThreadResponse), // convert items to JSON string
     };
   } catch (error) {
-    console.log("handler error: ", error);
-    console.log("handler error: ", error.message);
-    console.log("handler error: ", error.stack);
+    console.log(error);
+    console.log("Error message:", error.message);
+    console.log("Stack trace:", error.stack);
     return {
-      statusCode: 500,
+      statusCode: 400,
       headers: {
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Methods": "*",

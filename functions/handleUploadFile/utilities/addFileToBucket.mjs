@@ -15,13 +15,15 @@ export const addFileToBucket = async (payload) => {
     Body: fileBuffer,
   };
 
+  console.log("params: ", params);
+
   // Upload file to S3
   try {
     const response = await s3Client.send(new PutObjectCommand(params));
 
     const returnBody = {
       fileName: payload.fileName,
-      fileURL: `https://amplifyaistoragebucket134815-dev.s3.us-east-2.amazonaws.com/${payload.userID}/${payload.threadID}/${payload.fileName}`,
+      fileURL: `https://trainicity-ai-storage-bucket.s3.us-east-2.amazonaws.com/${payload.userID}/${payload.threadID}/${payload.fileName}`,
       fileKey: `${payload.userID}/${payload.threadID}/${payload.fileName}`,
       userID: payload.userID,
       threadID: payload.threadID,
@@ -35,5 +37,6 @@ export const addFileToBucket = async (payload) => {
     console.error("Error", err);
     console.error("Error Message: ", err.message);
     console.error("Error Stack: ", err.stack);
+    throw new Error("Error uploading file to S3: ", err);
   }
 };

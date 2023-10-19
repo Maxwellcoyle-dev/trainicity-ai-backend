@@ -14,7 +14,6 @@ Parameters:
     Type: String
     Description: Name of the DynamoDB table
     Default: trainicity-ai-main-table
-
 Resources:
   AWSLayer:
     Type: AWS::Serverless::LayerVersion
@@ -92,7 +91,7 @@ Resources:
         UploadFileAPIEvent:
           Type: Api
           Properties:
-            Path: /updloadFile
+            Path: /uploadFile
             Method: ANY
   HandleListThreads:
     Type: AWS::Serverless::Function
@@ -120,10 +119,10 @@ Resources:
           Properties:
             Path: /listThreads
             Method: ANY
-  HandleCurrentThread:
+  HandleUpdateThread:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: functions/handleCurrentThread
+      CodeUri: functions/handleUpdateThread
       Handler: app.lambdaHandler
       Runtime: nodejs18.x
       Architectures:
@@ -143,10 +142,10 @@ Resources:
                 - dynamodb:PutItem
               Resource: !ImportValue TrainicityAIMainTableArn
       Events:
-        CurrentThreadAPIEvent:
+        UpdateThreadAPIEvent:
           Type: Api
           Properties:
-            Path: /currentThread
+            Path: /updateThread
             Method: ANY
   HandleDeleteFile:
     Type: AWS::Serverless::Function
@@ -201,6 +200,7 @@ Resources:
             - Effect: Allow
               Action:
                 - dynamodb:UpdateItem
+                - dynamodb:DeleteItem
               Resource: !ImportValue TrainicityAIMainTableArn
             # Policy for trainicity-ai-storage-bucket
             - Effect: Allow
@@ -238,6 +238,32 @@ Resources:
           Type: Api
           Properties:
             Path: /updateThreadTitle
+            Method: ANY
+  HandleUpdateThreadUrls:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/handleUpdateThreadUrls
+      Handler: app.lambdaHandler
+      Runtime: nodejs18.x
+      Architectures:
+        - x86_64
+      Layers:
+        - !Ref AWSLayer
+      Environment:
+        Variables:
+          MAIN_TABLE_NAME: !Ref MainTableName
+      Policies:
+        - Statement:
+            # Policy for trainicity-ai-main-table
+            - Effect: Allow
+              Action:
+                - dynamodb:UpdateItem
+              Resource: !ImportValue TrainicityAIMainTableArn
+      Events:
+        UpdateThreadTitleAPIEvent:
+          Type: Api
+          Properties:
+            Path: /updateThreadUrls
             Method: ANY
   HandleLLMStandardChat:
     Type: AWS::Serverless::Function

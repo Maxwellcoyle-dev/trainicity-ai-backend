@@ -46,6 +46,7 @@ export const lambdaHandler = async (event) => {
     }
 
     const payload = JSON.parse(event.body);
+    console.log("Payload:", payload);
 
     // Check if thread exists
     const getThreadResponse = await getThread(payload);
@@ -64,7 +65,7 @@ export const lambdaHandler = async (event) => {
       };
     } else {
       // If thread does not exist, create thread
-      const putThreadResponse = await createThread(payload);
+      const createThreadResponse = await createThread(payload);
       return {
         statusCode: 200,
         headers: {
@@ -72,7 +73,7 @@ export const lambdaHandler = async (event) => {
           "Access-Control-Allow-Methods": "*",
           "Access-Control-Allow-Headers": "*",
         },
-        body: JSON.stringify(putThreadResponse), // convert items to JSON string
+        body: JSON.stringify(createThreadResponse), // convert items to JSON string
       };
     }
   } catch (error) {

@@ -4,6 +4,24 @@ const REGION = "us-east-2";
 const ddbClient = new DynamoDBClient({ region: REGION });
 
 export const createThread = async (payload) => {
+  const filesForDynamo = payload.files.map((file) => {
+    console.log(file);
+    return {
+      M: {
+        fileName: { S: file },
+      },
+    };
+  });
+
+  const urlsForDynamo = payload.urls.map((url) => {
+    console.log(url);
+    return {
+      M: {
+        url: { S: url },
+      },
+    };
+  });
+
   const params = {
     TableName: process.env.MAIN_TABLE_NAME,
     Key: {
@@ -18,9 +36,12 @@ export const createThread = async (payload) => {
       ThreadTitle: { S: payload.threadTitle },
       ThreadMode: { S: payload.threadMode },
       ThreadInstructions: { S: payload.threadInstructions },
+      ThreadUrls: { L: urlsForDynamo },
+      ThreadFiles: { L: filesForDynamo },
     },
   };
 
+  console.log("createThread Params: ", params);
   try {
     const data = await ddbClient.send(new PutItemCommand(params));
     console.log("Success", data);

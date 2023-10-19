@@ -13,6 +13,18 @@ export const updateThread = async (payload) => {
     },
   }));
 
+  const filesForDynamo = payload.files.map((file) => ({
+    M: {
+      fileName: { S: file.fileName },
+    },
+  }));
+
+  const urlsForDynamo = payload.urls.map((url) => ({
+    M: {
+      url: { S: url.url },
+    },
+  }));
+
   const params = {
     TableName: process.env.MAIN_TABLE_NAME,
     Key: {
@@ -20,14 +32,18 @@ export const updateThread = async (payload) => {
       ThreadID: { S: payload.threadID },
     },
     UpdateExpression:
-      "set Messages = :messages, LastUpdated = :lastUpdated, ThreadTitle = :threadTitle, ThreadInstructions = :threadInstructions",
+      "set Messages = :messages, LastUpdated = :lastUpdated, ThreadTitle = :threadTitle, ThreadInstructions = :threadInstructions, ThreadUrls = :threadUrls, ThreadFiles = :threadFiles",
     ExpressionAttributeValues: {
       ":messages": { L: messagesForDynamo },
       ":lastUpdated": { S: payload.lastUpdated },
       ":threadTitle": { S: payload.threadTitle },
       ":threadInstructions": { S: payload.threadInstructions },
+      ":threadUrls": { L: urlsForDynamo },
+      ":threadFiles": { L: filesForDynamo },
     },
   };
+
+  console.log("UpdateThread Params: ", params);
 
   try {
     const data = await ddbClient.send(new UpdateItemCommand(params));
