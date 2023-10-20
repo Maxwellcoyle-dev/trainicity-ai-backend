@@ -8,19 +8,21 @@ export const createThread = async (payload) => {
     console.log(file);
     return {
       M: {
-        fileName: { S: file },
+        fileName: { S: file.fileName },
+        fileKey: { S: file.fileKey },
+        fileUrl: { S: file.fileURL },
       },
     };
   });
+  console.log("filesForDynamo: ", filesForDynamo);
 
   const urlsForDynamo = payload.urls.map((url) => {
     console.log(url);
     return {
-      M: {
-        url: { S: url },
-      },
+      S: url,
     };
   });
+  console.log("urlsForDynamo: ", urlsForDynamo);
 
   const params = {
     TableName: process.env.MAIN_TABLE_NAME,
@@ -42,11 +44,14 @@ export const createThread = async (payload) => {
   };
 
   console.log("createThread Params: ", params);
+  console.log("url", params.Item.ThreadUrls);
+
   try {
     const data = await ddbClient.send(new PutItemCommand(params));
     console.log("Success", data);
     return data;
   } catch (err) {
-    console.error("PutThread Error: ", err);
+    console.error("createThread Error: ", err);
+    return err;
   }
 };
