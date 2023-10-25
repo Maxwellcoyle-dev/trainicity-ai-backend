@@ -23,7 +23,7 @@ export const addFileToBucket = async (payload) => {
 
     const returnBody = {
       fileName: payload.fileName,
-      fileURL: `https://trainicity-ai-storage-bucket.s3.us-east-2.amazonaws.com/${payload.userID}/${payload.threadID}/${payload.fileName}`,
+      fileUrl: `https://trainicity-ai-storage-bucket.s3.us-east-2.amazonaws.com/${payload.userID}/${payload.threadID}/${payload.fileName}`,
       fileKey: `${payload.userID}/${payload.threadID}/${payload.fileName}`,
       userID: payload.userID,
       threadID: payload.threadID,

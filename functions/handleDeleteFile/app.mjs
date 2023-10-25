@@ -38,10 +38,11 @@ export const lambdaHandler = async (event) => {
     console.log("body type: ", typeof body);
 
     const deleteFileFromS3 = await deleteFileFromBucket(body.fileKey);
+    console.log("deleteFileFromS3: ", deleteFileFromS3);
 
     let dynamoDBResponse;
 
-    if (deleteFileFromS3.DeleteMarker) {
+    if (deleteFileFromS3) {
       dynamoDBResponse = await deleteFileFromDynamoDB(
         body.userID,
         body.threadID,

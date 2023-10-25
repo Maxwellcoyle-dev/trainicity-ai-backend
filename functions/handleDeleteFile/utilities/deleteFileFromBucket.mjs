@@ -13,8 +13,9 @@ export const deleteFileFromBucket = async (fileKey) => {
     console.log("S3 Delete Success", response);
     return response;
   } catch (err) {
-    console.error("Error", err);
+    console.error("Error Deleting File from bucket", err);
     console.error("Error Message: ", err.message);
     console.error("Error Stack: ", err.stack);
+    return err;
   }
 };

@@ -21,31 +21,35 @@ export const deleteFileFromDynamoDB = async (
   };
 
   const fileListResponse = await ddbClient.send(new GetItemCommand(getParams));
+  console.log("fileListResponse: ", fileListResponse);
+  const filesList = fileListResponse.Item.ThreadFiles.L;
 
-  const filesList = fileListResponse.Item.Files.L;
-
+  console.log("filesList: ", filesList);
   const updatedList = filesList.filter((file) => {
     return file.M.fileKey.S !== fileKeyToRemove;
   });
 
+  console.log("updatedList: ", updatedList);
+
   try {
     const updateParams = {
-      TableName: "amplifyAiProjectTable",
+      TableName: process.env.MAIN_TABLE_NAME,
       Key: {
         UserID: { S: userID },
         ThreadID: { S: threadID },
       },
-      UpdateExpression: "set Files = :files",
+      UpdateExpression: "set ThreadFiles = :threadFiles",
       ExpressionAttributeValues: {
-        ":files": { L: updatedList },
+        ":threadFiles": { L: updatedList },
       },
     };
     const response = await ddbClient.send(new UpdateItemCommand(updateParams));
     console.log("DynamoDB Delete Success", response);
     return response;
   } catch (err) {
-    console.error("Error", err);
+    console.error("Error deleting file from dynamodb", err);
     console.error("Error Message: ", err.message);
     console.error("Error Stack: ", err.stack);
+    return err;
   }
 };

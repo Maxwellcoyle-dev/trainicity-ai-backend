@@ -5,23 +5,23 @@ const ddbClient = new DynamoDBClient({ region: REGION });
 
 export const updateThread = async (payload) => {
   // Convert the messages array into DynamoDB format
-  const messagesForDynamo = payload.messages.map((message) => ({
+  const messagesForDynamo = payload?.messages?.map((message) => ({
     M: {
-      role: { S: message.role },
-      content: { S: message.content },
-      messageID: { S: message.messageID },
+      role: { S: message?.role },
+      content: { S: message?.content },
+      messageID: { S: message?.messageID },
     },
   }));
 
-  const filesForDynamo = payload.files.map((file) => ({
+  const filesForDynamo = payload?.files?.map((file) => ({
     M: {
       fileName: { S: file.fileName },
     },
   }));
 
-  const urlsForDynamo = payload.urls.map((url) => ({
+  const urlsForDynamo = payload?.urls?.map((url) => ({
     M: {
-      url: { S: url.url },
+      url: { S: url },
     },
   }));
 
@@ -34,7 +34,7 @@ export const updateThread = async (payload) => {
     UpdateExpression:
       "set Messages = :messages, LastUpdated = :lastUpdated, ThreadTitle = :threadTitle, ThreadInstructions = :threadInstructions, ThreadUrls = :threadUrls, ThreadFiles = :threadFiles",
     ExpressionAttributeValues: {
-      ":messages": { L: messagesForDynamo },
+      ":messages": { L: messagesForDynamo || [] },
       ":lastUpdated": { S: payload.lastUpdated },
       ":threadTitle": { S: payload.threadTitle },
       ":threadInstructions": { S: payload.threadInstructions },
@@ -53,5 +53,6 @@ export const updateThread = async (payload) => {
     console.error("UpdateThread Error: ", err);
     console.log("UpdateThread Error message:", err.message);
     console.log("UpdateThread Stack trace:", err.stack);
+    return err;
   }
 };

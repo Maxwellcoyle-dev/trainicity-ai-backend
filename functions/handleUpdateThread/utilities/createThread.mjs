@@ -4,13 +4,13 @@ const REGION = "us-east-2";
 const ddbClient = new DynamoDBClient({ region: REGION });
 
 export const createThread = async (payload) => {
-  const filesForDynamo = payload.files.map((file) => {
+  const filesForDynamo = payload?.files?.map((file) => {
     console.log(file);
     return {
       M: {
         fileName: { S: file.fileName },
         fileKey: { S: file.fileKey },
-        fileUrl: { S: file.fileURL },
+        fileUrl: { S: file.fileUrl },
       },
     };
   });

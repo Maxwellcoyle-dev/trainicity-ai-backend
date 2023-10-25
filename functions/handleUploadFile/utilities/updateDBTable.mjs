@@ -8,9 +8,9 @@ export const updateDBTable = async (
   threadID,
   fileName,
   fileKey,
-  fileURL
+  fileUrl
 ) => {
-  console.log("updateDBTable: ", userID, threadID, fileName, fileKey, fileURL);
+  console.log("updateDBTable: ", userID, threadID, fileName, fileKey, fileUrl);
 
   try {
     const params = {
@@ -31,7 +31,7 @@ export const updateDBTable = async (
               M: {
                 fileName: { S: fileName },
                 fileKey: { S: fileKey },
-                fileURL: { S: fileURL },
+                fileUrl: { S: fileUrl },
               },
             },
           ],
