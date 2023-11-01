@@ -285,9 +285,6 @@ Resources:
       CodeUri: functions/handleLLMDocQAChat
       Handler: app.lambdaHandler
       Runtime: nodejs18.x
-      FunctionUrlConfig:
-        AuthType: NONE
-        InvokeMode: RESPONSE_STREAM
       Architectures:
         - x86_64
       Layers:
@@ -310,3 +307,9 @@ Resources:
               Action:
                 - s3:GetObject
               Resource: !ImportValue TrainicityAIStorageBucketArn
+      Events:
+        LLMDocQAChatAPIEvent:
+          Type: Api
+          Properties:
+            Path: /LLMDocQAChat
+            Method: ANY

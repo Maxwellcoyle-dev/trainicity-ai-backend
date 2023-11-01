@@ -9,10 +9,10 @@ import { OpenAIEmbeddings } from "langchain/embeddings/openai";
 import { MemoryVectorStore } from "langchain/vectorstores/memory";
 
 // utility functions
-import { getThread } from "./getThread.js";
-import { prepDocs } from "./prepDocs.js";
-import { setBufferMemory } from "./setBufferMemory.js";
-import { updateThread } from "./updateThread.js";
+import { getThread } from "./getThread.mjs";
+import { prepDocs } from "./prepDocs.mjs";
+import { setMemoryBuffer } from "./setMemoryBuffer.mjs";
+import { updateThread } from "./updateThread.mjs";
 
 // messageID
 import { v4 as uuidv4 } from "uuid";
@@ -35,11 +35,12 @@ export const main = async (payload) => {
       payload.threadID
     );
 
+    let newMessageList = [];
     // if there are no messages for this thread,
     // update the thread messages with the new message from the user
     // else do the same but add the new message to the end of the array
     if (!messageList || messageList?.length === 0) {
-      const newMessageList = [
+      newMessageList = [
         {
           role: "user",
           content: payload.question,
@@ -53,7 +54,7 @@ export const main = async (payload) => {
       };
       updateThread(newMessagePayload);
     } else {
-      const newMessageList = [
+      newMessageList = [
         ...messageList,
         {
           role: "user",
@@ -70,7 +71,7 @@ export const main = async (payload) => {
     }
 
     // send messages array to memory buffer
-    const bufferMemory = await setBufferMemory(bufferMessageList);
+    const bufferMemory = await setMemoryBuffer(bufferMessageList);
 
     // Load the documents to use as context.
     const splitDocs = await prepDocs();
@@ -99,7 +100,7 @@ export const main = async (payload) => {
       vectorStore.asRetriever(),
       {
         returnSourceDocuments: true,
-        bufferMemory,
+        memory: bufferMemory,
       }
     );
 
@@ -110,14 +111,11 @@ export const main = async (payload) => {
 
     console.log("Res: ", res);
 
-    const newMessageList = [
-      ...messageList,
-      {
-        role: "assistant",
-        content: res.text,
-        messageID: uuidv4(),
-      },
-    ];
+    newMessageList.push({
+      role: "assistant",
+      content: res.text,
+      messageID: uuidv4(),
+    });
     const newMessagePayload = {
       newMessageList: newMessageList,
       userID: payload.userID,
@@ -125,9 +123,7 @@ export const main = async (payload) => {
     };
     updateThread(newMessagePayload);
 
-    console.log("message store: ", messageStore);
-
-    return { res, followUpRes };
+    return { res };
   } catch (error) {
     console.log({ error });
     return error;

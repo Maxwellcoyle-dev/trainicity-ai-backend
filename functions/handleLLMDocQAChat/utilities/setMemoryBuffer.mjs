@@ -10,7 +10,7 @@ import { BufferMemory } from "langchain/memory";
 //   },
 // ];
 
-export const setBufferMemory = async (messages) => {
+export const setMemoryBuffer = async (messages) => {
   const history = new ChatMessageHistory();
 
   for (const message of messages) {
@@ -25,8 +25,8 @@ export const setBufferMemory = async (messages) => {
 
   // create the memory buffer
   const memory = new BufferMemory({
-    chatHistory: history,
     memoryKey: "chat_history",
+    chatHistory: history,
     returnMessages: true,
     inputKey: "question",
     outputKey: "text",

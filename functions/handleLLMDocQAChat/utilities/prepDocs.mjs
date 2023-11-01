@@ -10,7 +10,7 @@ import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 export const prepDocs = async () => {
   try {
     // Load the documents to use as context.
-    const loader = new DirectoryLoader("../files", {
+    const loader = new DirectoryLoader("/tmp", {
       ".pdf": (path) => new PDFLoader(path),
       ".docx": (path) => new DocxLoader(path),
       ".txt": (path) => new TextLoader(path),

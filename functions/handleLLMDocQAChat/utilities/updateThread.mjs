@@ -17,11 +17,13 @@ const ddbClient = new DynamoDBClient({ region: REGION });
 //  lastUpdated
 
 export const updateThread = async (payload) => {
+  console.log("payload: ", payload);
+
   // Set the lastUpdated timestamp
   const lastUpdated = Date.now().toString();
 
   // Convert the messages array into DynamoDB format
-  const messagesForDynamo = payload.messages.map((message) => ({
+  const messagesForDynamo = payload.newMessageList?.map((message) => ({
     M: {
       role: { S: message.role },
       content: { S: message.content },

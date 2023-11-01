@@ -23,15 +23,20 @@ export const lambdaHandler = async (event) => {
           "Access-Control-Allow-Methods": "*",
           "Access-Control-Allow-Headers": "*",
         },
-        body: JSON.stringify({ message: "Hello World" }), // OPTIONS requests don't typically need a body
       };
     }
+
+    if (event.requestContext?.authorizer) {
+      console.log(`CLAIMS: `, event.requestContext?.authorizer?.claims);
+    }
+
     console.log(`EVENT: ${JSON.stringify(event)}`);
 
     const OPENAI_API_KEY = await getOpenAIKey();
 
     // Get the body and save to payload
     const payload = JSON.parse(event.body); // Expecting an array of file keys
+    console.log("payload: ", payload);
 
     // Return an error if no files are recieved in the body
     if (payload.files?.length < 1)
@@ -39,10 +44,7 @@ export const lambdaHandler = async (event) => {
 
     let filePaths = [];
     for (let i = 0; i < payload.files.length; i++) {
-      const buffer = await getFile(
-        "amplifyaistoragebucket134815-dev",
-        payload.files[i]
-      );
+      const buffer = await getFile(payload.files[i]);
       const newFilePath = saveFile(buffer, payload.files[i]);
       filePaths.push(newFilePath);
     }
@@ -62,6 +64,11 @@ export const lambdaHandler = async (event) => {
 
     return {
       statusCode: 200,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "*",
+        "Access-Control-Allow-Headers": "*",
+      },
       body: JSON.stringify(result),
     };
   } catch (error) {

@@ -11,7 +11,6 @@ export const lambdaHandler = async (event) => {
           "Access-Control-Allow-Methods": "*",
           "Access-Control-Allow-Headers": "*",
         },
-        body: JSON.stringify({ message: "Hello World" }), // OPTIONS requests don't typically need a body
       };
     }
 
