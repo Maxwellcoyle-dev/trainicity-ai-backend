@@ -89,7 +89,7 @@ export const main = async (payload) => {
 
     // Create a chat model to use in the chain
     const model = new ChatOpenAI({
-      model: "gpt-3.5-turbo-16k",
+      model: "gpt-4-1106-preview",
       openAIApiKey: payload.apiKey,
     });
 

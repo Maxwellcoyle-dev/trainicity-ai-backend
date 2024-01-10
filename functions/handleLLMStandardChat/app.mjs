@@ -50,9 +50,9 @@ export const lambdaHandler = awslambda.streamifyResponse(
 
       const response = await openai.chat.completions.create(
         {
-          model: "gpt-3.5-turbo-16k",
+          model: "gpt-4-1106-preview",
           stream: true,
-          max_tokens: 14000,
+          max_tokens: 50000,
           messages: [
             {
               role: "system",
